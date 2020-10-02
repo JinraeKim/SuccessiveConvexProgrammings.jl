@@ -1,4 +1,4 @@
-# SuccessiveConvexProgrammings
+# SuccessiveConvexProgrammings.jl
 **SuccessiveConvexProgrammings.jl** (a.k.a. SCPs)
 is for Successive Convex Programming algorithms.
 Currently,
