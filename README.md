@@ -98,3 +98,5 @@ SCvx
 ```
 
 See directory `test` for more details.
+To enhance the optimisation speed,
+consider using [PackageCompiler.jl](https://github.com/JuliaLang/PackageCompiler.jl).
