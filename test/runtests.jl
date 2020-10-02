@@ -1,5 +1,5 @@
 using SuccessiveConvexProgrammings
-const _SCvx = SuccessiveConvexification
+const SCvxs = SuccessiveConvexifications
 using Test
 
 using LinearAlgebra
@@ -39,7 +39,7 @@ function test_get_J()
                              consts_terminal_eq=[my_const_terminal_eq],
                             )
     X, U = scvx.X_k, scvx.U_k  # zeros
-    obj = _SCvx.get_J(scvx, X, U)
+    obj = SCvxs.get_J(scvx, X, U)
     @test obj == (
                   16.0
                   + (N-1) * scvx.λ * 2.0 * n_u
@@ -56,7 +56,7 @@ function test_get_obj()
                              objs_terminal=[my_terminal_obj],
                             )
     X, U = scvx.X_k, scvx.U_k  # zeros
-    obj = _SCvx.get_obj(scvx, X, U)
+    obj = SCvxs.get_obj(scvx, X, U)
     @test obj == 16.0
 end
 
@@ -67,7 +67,7 @@ function test_calculate_objs_path()
                              objs_path=[my_path_obj],
                             )
     X, U = scvx.X_k, scvx.U_k  # zeros
-    path_obj = _SCvx.calculate_objs_path(scvx, X, U)
+    path_obj = SCvxs.calculate_objs_path(scvx, X, U)
     @test path_obj == 0.0
 end
 
@@ -78,7 +78,7 @@ function test_calculate_objs_terminal()
                              objs_terminal=[my_terminal_obj],
                             )
     X, U = scvx.X_k, scvx.U_k  # zeros
-    terminal_obj = _SCvx.calculate_objs_terminal(scvx, X)
+    terminal_obj = SCvxs.calculate_objs_terminal(scvx, X)
     @test terminal_obj == 16.0
 end
 
@@ -92,7 +92,7 @@ function test_get_obj_const_penalty()
                              consts_terminal_eq=[my_const_terminal_eq],
                             )
     X, U = scvx.X_k, scvx.U_k  # zeros
-    obj = _SCvx.get_obj_const_penalty(scvx, X, U)
+    obj = SCvxs.get_obj_const_penalty(scvx, X, U)
     @test obj == (N-1) * scvx.λ * 2.0 * n_u + 0.0 + scvx.λ * norm(my_const_terminal_eq(X[end, :]), 1)
 end
 
@@ -103,7 +103,7 @@ function test_calculate_const_path_penalty()
                              consts_path_ineq=[not_too_large_input],
                             )
     X, U = scvx.X_k, scvx.U_k  # zeros
-    obj = _SCvx.calculate_const_path_penalty(scvx, X, U)
+    obj = SCvxs.calculate_const_path_penalty(scvx, X, U)
     @test obj == (N-1) * scvx.λ * 2.0 * n_u
 end
 
@@ -114,7 +114,7 @@ function test_calculate_const_initial_penalty()
                              consts_initial_eq=[my_const_initial_eq],
                             )
     X, U = scvx.X_k, scvx.U_k  # zeros
-    obj = _SCvx.calculate_const_initial_penalty(scvx, X, U)
+    obj = SCvxs.calculate_const_initial_penalty(scvx, X, U)
     @test obj == 0.0
 end
 
@@ -125,7 +125,7 @@ function test_calculate_const_terminal_penalty()
                              consts_terminal_eq=[my_const_terminal_eq],
                             )
     X, U = scvx.X_k, scvx.U_k  # zeros
-    obj = _SCvx.calculate_const_terminal_penalty(scvx, X)
+    obj = SCvxs.calculate_const_terminal_penalty(scvx, X)
     @test obj == scvx.λ * norm(my_const_terminal_eq(X[end, :]), 1)
 end
 
@@ -143,7 +143,7 @@ function test_get_L()
     X, U = scvx.X_k, scvx.U_k  # zeros
     D, W = X, U
     jacob_dict = Dict()
-    obj = _SCvx.get_L(scvx, D, W, jacob_dict)
+    obj = SCvxs.get_L(scvx, D, W, jacob_dict)
     @test obj == (
                   16.0
                   + (N-1) * scvx.λ * 2.0 * n_u
@@ -160,7 +160,7 @@ function test_get_obj_linearised()
                              objs_terminal=[my_terminal_obj],
                             )
     X, U = scvx.X_k, scvx.U_k  # zeros
-    obj, jacob_dict = _SCvx.get_obj_linearised(scvx, X, U)
+    obj, jacob_dict = SCvxs.get_obj_linearised(scvx, X, U)
     @test obj == 0.0 + 16.0
 end
 
@@ -173,7 +173,7 @@ function test_calculate_objs_path_linearised()
     X, U = scvx.X_k, scvx.U_k  # zeros
     D, W = X, U  # originally, it should be values from Convex.Variable
     jacob_dict = Dict()
-    obj, _ = _SCvx.calculate_objs_path_linearised(scvx, D, W, jacob_dict)
+    obj, _ = SCvxs.calculate_objs_path_linearised(scvx, D, W, jacob_dict)
     @test obj == 0.0
 end
 function test_calculate_objs_terminal_linearised()
@@ -185,7 +185,7 @@ function test_calculate_objs_terminal_linearised()
     X, U = scvx.X_k, scvx.U_k  # zeros
     D, W = X, U  # originally, it should be values from Convex.Variable
     jacob_dict = Dict()
-    obj, _ = _SCvx.calculate_objs_terminal_linearised(scvx, D, W, jacob_dict)
+    obj, _ = SCvxs.calculate_objs_terminal_linearised(scvx, D, W, jacob_dict)
     @test obj == 16.0
 end
 
@@ -200,7 +200,7 @@ function test_get_obj_const_penalty_linearised()
                              consts_terminal_eq=[my_const_terminal_eq],
                             )
     X, U = scvx.X_k, scvx.U_k  # zeros
-    obj, jacob_dict = _SCvx.get_obj_const_penalty_linearised(scvx, X, U)
+    obj, jacob_dict = SCvxs.get_obj_const_penalty_linearised(scvx, X, U)
     @test obj == (N-1) * scvx.λ * 2.0 * n_u + 0.0 + scvx.λ * 2.0 * n_x
 end
 
@@ -213,7 +213,7 @@ function test_calculate_const_path_penalty_linearised()
     X, U = scvx.X_k, scvx.U_k  # zeros
     D, W = X, U  # originally, it should be values from Convex.Variable
     jacob_dict = Dict()
-    obj, _ = _SCvx.calculate_const_path_penalty_linearised(scvx, D, W, jacob_dict)
+    obj, _ = SCvxs.calculate_const_path_penalty_linearised(scvx, D, W, jacob_dict)
     @test obj == (N-1) * scvx.λ * 2.0 * n_u
 end
 
@@ -226,7 +226,7 @@ function test_calculate_const_initial_penalty_linearised()
     X, U = scvx.X_k, scvx.U_k  # zeros
     D, W = X, U  # originally, it should be values from Convex.Variable
     jacob_dict = Dict()
-    obj, _ = _SCvx.calculate_const_initial_penalty_linearised(scvx, D, W, jacob_dict)
+    obj, _ = SCvxs.calculate_const_initial_penalty_linearised(scvx, D, W, jacob_dict)
     @test obj == 0.0
 end
 
@@ -239,7 +239,7 @@ function test_calculate_const_terminal_penalty_linearised()
     X, U = scvx.X_k, scvx.U_k  # zeros
     D, W = X, U  # originally, it should be values from Convex.Variable
     jacob_dict = Dict()
-    obj, _ = _SCvx.calculate_const_terminal_penalty_linearised(scvx, D, W, jacob_dict)
+    obj, _ = SCvxs.calculate_const_terminal_penalty_linearised(scvx, D, W, jacob_dict)
     @test obj == 2.0 * n_x * scvx.λ
 end
 
@@ -256,13 +256,12 @@ function test_solve_cvx_subprob()
                              consts_initial_eq=[my_const_initial_eq],
                              consts_terminal_eq=[my_const_terminal_eq],
                             )
-    D, W, jacob_dict = _SCvx.solve_cvx_subprob(scvx)
+    D, W, jacob_dict = SCvxs.solve_cvx_subprob(scvx)
     println("D: $(D.value)")
     println("W: $(W.value)")
 end
 
-function test_solve(;verbose=false)
-    print_message("solve")
+function test_scvx_example(; verbose=false)
     n_x, n_u, N = 4, 2, 31
     scvx = SCvx(N=N, n_x=n_x, n_u=n_u,
                              objs_path=[my_path_obj],
@@ -276,6 +275,12 @@ function test_solve(;verbose=false)
     X_0, U_0 = ones(N, n_x), ones(N-1, n_u)
     scvx = initial_guess!(scvx, X_0, U_0)
     @time solve!(scvx, verbose=verbose)
+end
+
+function test_solve(;verbose=false)
+    print_message("solve")
+    scvx = test_scvx_example(verbose=false)
+    N = scvx.N
     @show scvx.obj_k, scvx.i, scvx.flag
     @show scvx.X_k
     @show scvx.U_k
@@ -401,6 +406,8 @@ function test_all()
     # ################## solve ##################
     # test_solve_cvx_subprob()
     test_solve(verbose=false)
+    # ################## solve ##################
+    # test_scvx_example()
 end
 
 test_all()

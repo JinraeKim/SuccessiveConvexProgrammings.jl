@@ -2,8 +2,8 @@ module SuccessiveConvexProgrammings
 
 
 using Reexport
-include("SuccessiveConvexification.jl")
-@reexport using .SuccessiveConvexification
+include("SuccessiveConvexifications.jl")
+@reexport using .SuccessiveConvexifications
 # Note: module Linearisers is reexported in Algorithms
 
 
