@@ -32,12 +32,12 @@ function test_get_J()
     print_message("get_J")
     n_x, n_u, N = 4, 2, 11
     scvx = SCvx(N=N, n_x=n_x, n_u=n_u,
-                             objs_path=[my_path_obj],
-                             objs_terminal=[my_terminal_obj],
-                             consts_path_ineq=[not_too_large_input],
-                             consts_initial_eq=[my_const_initial_eq],
-                             consts_terminal_eq=[my_const_terminal_eq],
-                            )
+                objs_path=[my_path_obj],
+                objs_terminal=[my_terminal_obj],
+                consts_path_ineq=[not_too_large_input],
+                consts_initial_eq=[my_const_initial_eq],
+                consts_terminal_eq=[my_const_terminal_eq],
+               )
     X, U = scvx.X_k, scvx.U_k  # zeros
     obj = SCvxs.get_J(scvx, X, U)
     @test obj == (
@@ -52,9 +52,9 @@ function test_get_obj()
     print_message("get_obj")
     n_x, n_u, N = 4, 2, 11
     scvx = SCvx(N=N, n_x=n_x, n_u=n_u,
-                             objs_path=[my_path_obj],
-                             objs_terminal=[my_terminal_obj],
-                            )
+                objs_path=[my_path_obj],
+                objs_terminal=[my_terminal_obj],
+               )
     X, U = scvx.X_k, scvx.U_k  # zeros
     obj = SCvxs.get_obj(scvx, X, U)
     @test obj == 16.0
@@ -64,8 +64,8 @@ function test_calculate_objs_path()
     print_message("calculate_objs_path")
     n_x, n_u, N = 4, 2, 11
     scvx = SCvx(N=N, n_x=n_x, n_u=n_u,
-                             objs_path=[my_path_obj],
-                            )
+                objs_path=[my_path_obj],
+               )
     X, U = scvx.X_k, scvx.U_k  # zeros
     path_obj = SCvxs.calculate_objs_path(scvx, X, U)
     @test path_obj == 0.0
@@ -75,8 +75,8 @@ function test_calculate_objs_terminal()
     print_message("calculate_objs_terminal")
     n_x, n_u, N = 4, 2, 11
     scvx = SCvx(N=N, n_x=n_x, n_u=n_u,
-                             objs_terminal=[my_terminal_obj],
-                            )
+                objs_terminal=[my_terminal_obj],
+               )
     X, U = scvx.X_k, scvx.U_k  # zeros
     terminal_obj = SCvxs.calculate_objs_terminal(scvx, X)
     @test terminal_obj == 16.0
@@ -87,10 +87,10 @@ function test_get_obj_const_penalty()
     print_message("get_obj_const_penalty")
     n_x, n_u, N = 4, 2, 11
     scvx = SCvx(N=N, n_x=n_x, n_u=n_u,
-                             consts_path_ineq=[not_too_large_input],
-                             consts_initial_eq=[my_const_initial_eq],
-                             consts_terminal_eq=[my_const_terminal_eq],
-                            )
+                consts_path_ineq=[not_too_large_input],
+                consts_initial_eq=[my_const_initial_eq],
+                consts_terminal_eq=[my_const_terminal_eq],
+               )
     X, U = scvx.X_k, scvx.U_k  # zeros
     obj = SCvxs.get_obj_const_penalty(scvx, X, U)
     @test obj == (N-1) * scvx.λ * 2.0 * n_u + 0.0 + scvx.λ * norm(my_const_terminal_eq(X[end, :]), 1)
@@ -100,8 +100,8 @@ function test_calculate_const_path_penalty()
     print_message("calculate_const_path_penalty")
     n_x, n_u, N = 4, 2, 11
     scvx = SCvx(N=N, n_x=n_x, n_u=n_u,
-                             consts_path_ineq=[not_too_large_input],
-                            )
+                consts_path_ineq=[not_too_large_input],
+               )
     X, U = scvx.X_k, scvx.U_k  # zeros
     obj = SCvxs.calculate_const_path_penalty(scvx, X, U)
     @test obj == (N-1) * scvx.λ * 2.0 * n_u
@@ -111,8 +111,8 @@ function test_calculate_const_initial_penalty()
     print_message("calculate_const_initial_penalty")
     n_x, n_u, N = 4, 2, 11
     scvx = SCvx(N=N, n_x=n_x, n_u=n_u,
-                             consts_initial_eq=[my_const_initial_eq],
-                            )
+                consts_initial_eq=[my_const_initial_eq],
+               )
     X, U = scvx.X_k, scvx.U_k  # zeros
     obj = SCvxs.calculate_const_initial_penalty(scvx, X, U)
     @test obj == 0.0
@@ -122,8 +122,8 @@ function test_calculate_const_terminal_penalty()
     print_message("calculate_const_terminal_penalty")
     n_x, n_u, N = 4, 2, 11
     scvx = SCvx(N=N, n_x=n_x, n_u=n_u,
-                             consts_terminal_eq=[my_const_terminal_eq],
-                            )
+                consts_terminal_eq=[my_const_terminal_eq],
+               )
     X, U = scvx.X_k, scvx.U_k  # zeros
     obj = SCvxs.calculate_const_terminal_penalty(scvx, X)
     @test obj == scvx.λ * norm(my_const_terminal_eq(X[end, :]), 1)
@@ -134,12 +134,12 @@ function test_get_L()
     print_message("get_L")
     n_x, n_u, N = 4, 2, 11
     scvx = SCvx(N=N, n_x=n_x, n_u=n_u,
-                             objs_path=[my_path_obj],
-                             objs_terminal=[my_terminal_obj],
-                             consts_path_ineq=[not_too_large_input],
-                             consts_initial_eq=[my_const_initial_eq],
-                             consts_terminal_eq=[my_const_terminal_eq],
-                            )
+                objs_path=[my_path_obj],
+                objs_terminal=[my_terminal_obj],
+                consts_path_ineq=[not_too_large_input],
+                consts_initial_eq=[my_const_initial_eq],
+                consts_terminal_eq=[my_const_terminal_eq],
+               )
     X, U = scvx.X_k, scvx.U_k  # zeros
     D, W = X, U
     jacob_dict = Dict()
@@ -156,9 +156,9 @@ function test_get_obj_linearised()
     print_message("get_obj_linearised")
     n_x, n_u, N = 4, 2, 11
     scvx = SCvx(N=N, n_x=n_x, n_u=n_u,
-                             objs_path=[my_path_obj],
-                             objs_terminal=[my_terminal_obj],
-                            )
+                objs_path=[my_path_obj],
+                objs_terminal=[my_terminal_obj],
+               )
     X, U = scvx.X_k, scvx.U_k  # zeros
     obj, jacob_dict = SCvxs.get_obj_linearised(scvx, X, U)
     @test obj == 0.0 + 16.0
@@ -168,8 +168,8 @@ function test_calculate_objs_path_linearised()
     print_message("calculate_objs_path_linearised")
     n_x, n_u, N = 4, 2, 11
     scvx = SCvx(N=N, n_x=n_x, n_u=n_u,
-                             objs_path=[my_path_obj],
-                            )
+                objs_path=[my_path_obj],
+               )
     X, U = scvx.X_k, scvx.U_k  # zeros
     D, W = X, U  # originally, it should be values from Convex.Variable
     jacob_dict = Dict()
@@ -180,8 +180,8 @@ function test_calculate_objs_terminal_linearised()
     print_message("calculate_objs_terminal_linearised")
     n_x, n_u, N = 4, 2, 11
     scvx = SCvx(N=N, n_x=n_x, n_u=n_u,
-                             objs_terminal=[my_terminal_obj],
-                            )
+                objs_terminal=[my_terminal_obj],
+               )
     X, U = scvx.X_k, scvx.U_k  # zeros
     D, W = X, U  # originally, it should be values from Convex.Variable
     jacob_dict = Dict()
@@ -194,11 +194,11 @@ function test_get_obj_const_penalty_linearised()
     print_message("get_obj_const_penalty_linearised")
     n_x, n_u, N = 4, 2, 11
     scvx = SCvx(N=N, n_x=n_x, n_u=n_u,
-                             consts_path_ineq=[not_too_large_input],
-                             consts_path_eq=[my_const_path_eq],
-                             consts_initial_eq=[my_const_initial_eq],
-                             consts_terminal_eq=[my_const_terminal_eq],
-                            )
+                consts_path_ineq=[not_too_large_input],
+                consts_path_eq=[my_const_path_eq],
+                consts_initial_eq=[my_const_initial_eq],
+                consts_terminal_eq=[my_const_terminal_eq],
+               )
     X, U = scvx.X_k, scvx.U_k  # zeros
     obj, jacob_dict = SCvxs.get_obj_const_penalty_linearised(scvx, X, U)
     @test obj == (N-1) * scvx.λ * 2.0 * n_u + 0.0 + scvx.λ * 2.0 * n_x
@@ -208,8 +208,8 @@ function test_calculate_const_path_penalty_linearised()
     print_message("calculate_const_path_penalty_linearised")
     n_x, n_u, N = 4, 2, 11
     scvx = SCvx(N=N, n_x=n_x, n_u=n_u,
-                             consts_path_ineq=[not_too_large_input],
-                            )
+                consts_path_ineq=[not_too_large_input],
+               )
     X, U = scvx.X_k, scvx.U_k  # zeros
     D, W = X, U  # originally, it should be values from Convex.Variable
     jacob_dict = Dict()
@@ -221,8 +221,8 @@ function test_calculate_const_initial_penalty_linearised()
     print_message("calculate_const_initial_penalty_linearised")
     n_x, n_u, N = 4, 2, 11
     scvx = SCvx(N=N, n_x=n_x, n_u=n_u,
-                             consts_initial_eq=[my_const_initial_eq],
-                            )
+                consts_initial_eq=[my_const_initial_eq],
+               )
     X, U = scvx.X_k, scvx.U_k  # zeros
     D, W = X, U  # originally, it should be values from Convex.Variable
     jacob_dict = Dict()
@@ -234,8 +234,8 @@ function test_calculate_const_terminal_penalty_linearised()
     print_message("calculate_const_terminal_penalty_linearised")
     n_x, n_u, N = 4, 2, 11
     scvx = SCvx(N=N, n_x=n_x, n_u=n_u,
-                             consts_terminal_eq=[my_const_terminal_eq]
-                            )
+                consts_terminal_eq=[my_const_terminal_eq]
+               )
     X, U = scvx.X_k, scvx.U_k  # zeros
     D, W = X, U  # originally, it should be values from Convex.Variable
     jacob_dict = Dict()
@@ -249,13 +249,13 @@ function test_solve_cvx_subprob()
     print_message("solve_cvx_subprob")
     n_x, n_u, N = 4, 2, 11
     scvx = SCvx(N=N, n_x=n_x, n_u=n_u,
-                             objs_path=[my_path_obj],
-                             objs_terminal=[my_terminal_obj],
-                             consts_path_ineq=[not_too_large_input],
-                             consts_path_eq=[my_const_path_eq],
-                             consts_initial_eq=[my_const_initial_eq],
-                             consts_terminal_eq=[my_const_terminal_eq],
-                            )
+                objs_path=[my_path_obj],
+                objs_terminal=[my_terminal_obj],
+                consts_path_ineq=[not_too_large_input],
+                consts_path_eq=[my_const_path_eq],
+                consts_initial_eq=[my_const_initial_eq],
+                consts_terminal_eq=[my_const_terminal_eq],
+               )
     D, W, jacob_dict = SCvxs.solve_cvx_subprob(scvx)
     println("D: $(D.value)")
     println("W: $(W.value)")
@@ -264,14 +264,14 @@ end
 function test_scvx_example(; verbose=false)
     n_x, n_u, N = 4, 2, 31
     scvx = SCvx(N=N, n_x=n_x, n_u=n_u,
-                             objs_path=[my_path_obj],
-                             objs_terminal=[my_terminal_obj],
-                             consts_path_ineq=[not_too_large_input2,
-                                               not_too_small_input],
-                             consts_path_eq=[my_const_path_eq],
-                             consts_initial_eq=[my_const_initial_eq],
-                             consts_terminal_eq=[my_const_terminal_eq],
-                            )
+                objs_path=[my_path_obj],
+                objs_terminal=[my_terminal_obj],
+                consts_path_ineq=[not_too_large_input2,
+                                  not_too_small_input],
+                consts_path_eq=[my_const_path_eq],
+                consts_initial_eq=[my_const_initial_eq],
+                consts_terminal_eq=[my_const_terminal_eq],
+               )
     X_0, U_0 = ones(N, n_x), ones(N-1, n_u)
     scvx = initial_guess!(scvx, X_0, U_0)
     @time solve!(scvx, verbose=verbose)

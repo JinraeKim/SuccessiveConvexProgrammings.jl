@@ -7,7 +7,7 @@ this repo focuses on the realisation of the existing algorithms.
 ## Usage
 Here's an example of the usage of
 [Y. Mao et al., Successive Convexification, 2018](https://arxiv.org/abs/1804.06539),
-one of SCP algorithms.
+one of SCP algorithms for solving non-convex optimal control problem.
 
 ```julia
 # Custom functions for problem formulation
@@ -19,7 +19,7 @@ function my_terminal_obj(x::Array)::Array
     return [norm(x .- 2.0)^2]
 end
 
-function not_too_large_input(x::Array, u::Array)::Array
+function not_too_large_input(x::Array, u::Array)::Array  # not used here
     return u .+ 2.0  # <=0
 end
 
@@ -51,14 +51,14 @@ end
 # SCvx example
 n_x, n_u, N = 4, 2, 31
 scvx = SCvx(N=N, n_x=n_x, n_u=n_u,
-                         objs_path=[my_path_obj],
-                         objs_terminal=[my_terminal_obj],
-                         consts_path_ineq=[not_too_large_input2,
-                                           not_too_small_input],
-                         consts_path_eq=[my_const_path_eq],
-                         consts_initial_eq=[my_const_initial_eq],
-                         consts_terminal_eq=[my_const_terminal_eq],
-                        )
+            objs_path=[my_path_obj],
+            objs_terminal=[my_terminal_obj],
+            consts_path_ineq=[not_too_large_input2,
+                              not_too_small_input],
+            consts_path_eq=[my_const_path_eq],
+            consts_initial_eq=[my_const_initial_eq],
+            consts_terminal_eq=[my_const_terminal_eq],
+           )
 X_0, U_0 = ones(N, n_x), ones(N-1, n_u)
 scvx = initial_guess!(scvx, X_0, U_0)
 @time solve!(scvx, verbose=verbose)
