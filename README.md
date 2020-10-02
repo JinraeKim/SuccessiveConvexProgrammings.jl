@@ -5,7 +5,7 @@ Currently,
 this repo focuses on the realisation of the existing algorithms.
 
 ## Usage
-Here's an example of the usage of
+Here's an example code for
 [Y. Mao et al., Successive Convexification, 2018](https://arxiv.org/abs/1804.06539),
 one of SCP algorithms for solving non-convex optimal control problem.
 
