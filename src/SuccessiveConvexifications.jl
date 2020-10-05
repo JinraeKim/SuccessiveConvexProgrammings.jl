@@ -33,7 +33,7 @@ include("Linearisers.jl")
 
 
 export SCvx
-export initial_guess!, solve!
+export initial_guess!, solve!, flush!
 
 ##################### Extension ####################
 function Convex.pos(x::Array)
@@ -87,6 +87,18 @@ function initial_guess!(scvx::SCvx, X_k::Array, U_k::Array)
     end
     scvx.X_k, scvx.U_k = X_k, U_k
     return scvx
+end
+
+"""
+    flush!(scvx)
+
+Flush the initial values of solution.
+You would need this when applying this algorithm to fixed final time problem.
+"""
+function flush!(scvx::SCvx)
+    scvx.N = scvx.N - 1
+    scvx.X_k = scvx.X_k[2:end]
+    scvx.U_k = scvx.U_k[2:end]
 end
 
 function Cvx.solve!(scvx::SCvx; verbose::Bool=false)
