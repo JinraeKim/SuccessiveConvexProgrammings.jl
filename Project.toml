@@ -15,3 +15,10 @@ Reexport = "189a3867-3050-52da-a836-e630ba90ab69"
 
 [compat]
 julia = "1"
+Convex = "0.13"
+ForwardDiff = "0.10"
+FymEnvs = "0.2"
+Mosek = "1.1"
+MosekTools = "0.9"
+Parameters = "0.12"
+Reexport = "0.2"
