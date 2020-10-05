@@ -2,7 +2,7 @@ module Discretisers
 
 using FymEnvs
 using LinearAlgebra
-using Debugger
+# using Debugger
 include("Linearisers.jl")
 using .Linearisers: get_jacobian
 

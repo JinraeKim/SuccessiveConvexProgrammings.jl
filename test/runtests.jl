@@ -5,7 +5,7 @@ using Test
 using LinearAlgebra
 using Convex
 const Cvx = Convex
-using Debugger
+# using Debugger
 using Plots
 ENV["GKSwstype"]="nul"  # do not show plot
 
