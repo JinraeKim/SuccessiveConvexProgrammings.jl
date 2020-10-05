@@ -1,7 +1,6 @@
 using SuccessiveConvexProgrammings
 using Test
 
-using FymEnvs  # TODO: delete it
 using LinearAlgebra
 
 

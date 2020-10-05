@@ -25,7 +25,7 @@ const Cvx = Convex  # to clarify the code
 using Mosek
 using MosekTools
 const SOLVER = Mosek
-using Debugger  # TODO: delete it
+# using Debugger
 
 using Reexport
 include("Linearisers.jl")
