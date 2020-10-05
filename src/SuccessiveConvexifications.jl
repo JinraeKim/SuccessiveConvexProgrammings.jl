@@ -97,8 +97,8 @@ You would need this when applying this algorithm to fixed final time problem.
 """
 function flush!(scvx::SCvx)
     scvx.N = scvx.N - 1
-    scvx.X_k = scvx.X_k[2:end]
-    scvx.U_k = scvx.U_k[2:end]
+    scvx.X_k = scvx.X_k[2:end, :]
+    scvx.U_k = scvx.U_k[2:end, :]
 end
 
 function Cvx.solve!(scvx::SCvx; verbose::Bool=false)
