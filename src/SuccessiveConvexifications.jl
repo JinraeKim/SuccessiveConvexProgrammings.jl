@@ -33,7 +33,7 @@ include("Linearisers.jl")
 
 
 export SCvx
-export initial_guess!, solve!, flush!
+export initial_guess!, solve!, flush!, append!
 
 ##################### Extension ####################
 function Convex.pos(x::Array)
@@ -79,14 +79,14 @@ resp.
     β::Float64 = 2.0e0
     ϵ::Float64 = 1e-3
     # problem
-    objs_path::Array = []
-    objs_terminal::Array = []
-    consts_path_ineq::Array = []
-    consts_path_eq::Array = []
-    consts_initial_ineq::Array = []
-    consts_initial_eq::Array = []
-    consts_terminal_ineq::Array = []
-    consts_terminal_eq::Array = []
+    objs_path::Array{Function} = []
+    objs_terminal::Array{Function} = []
+    consts_path_ineq::Array{Function} = []
+    consts_path_eq::Array{Function} = []
+    consts_initial_ineq::Array{Function} = []
+    consts_initial_eq::Array{Function} = []
+    consts_terminal_ineq::Array{Function} = []
+    consts_terminal_eq::Array{Function} = []
     # default initial guess
     X_k::Array = zeros(N, n_x)
     U_k::Array = zeros(N-1, n_u)
@@ -114,6 +114,11 @@ function flush!(scvx::SCvx)
     scvx.N = scvx.N - 1
     scvx.X_k = scvx.X_k[2:end, :]
     scvx.U_k = scvx.U_k[2:end, :]
+end
+
+function Base.append!(scvx::SCvx, symbol, func::Array{<:Function})
+    symbol = Symbol(symbol)
+    append!(getproperty(scvx, symbol), func)
 end
 
 function Cvx.solve!(scvx::SCvx; verbose::Bool=false)
