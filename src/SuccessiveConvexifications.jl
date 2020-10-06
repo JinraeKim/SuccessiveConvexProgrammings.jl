@@ -47,6 +47,21 @@ function Convex.pos(x::Array)
 end
 
 ##################### SuccessiveConvexifications ####################
+"""
+# Note
+`objs` and `consts` is an array containing obj. funcs. and constraint funcs.,
+resp.
+1) The objective function is the sum of obj. funcs. in `objs` arrays.
+2) The constraint function is combination of all const. funcs. in `consts` arrays.
+    1) Inequality constraint: f ≤ 0
+    2) Equality constraint: f = 0
+# Arguments
+- `objs_(option)::Array`: contains objective functions.
+    - option: `path` or `terminal`
+- `consts_(option1)_(option2)::Array`: contains constraint functions.
+    - option1: `path`, `initial` or `terminal
+    - option2: `eq` or `ineq`
+"""
 @with_kw mutable struct SCvx
     # hyperparameters
     N::Int64;  @assert N > 2
@@ -64,14 +79,14 @@ end
     β::Float64 = 2.0e0
     ϵ::Float64 = 1e-3
     # problem
-    objs_path = nothing
-    objs_terminal = nothing
-    consts_path_ineq = nothing
-    consts_path_eq = nothing
-    consts_initial_ineq = nothing
-    consts_initial_eq = nothing
-    consts_terminal_ineq = nothing
-    consts_terminal_eq = nothing
+    objs_path::Array = []
+    objs_terminal::Array = []
+    consts_path_ineq::Array = []
+    consts_path_eq::Array = []
+    consts_initial_ineq::Array = []
+    consts_initial_eq::Array = []
+    consts_terminal_ineq::Array = []
+    consts_terminal_eq::Array = []
     # default initial guess
     X_k::Array = zeros(N, n_x)
     U_k::Array = zeros(N-1, n_u)
@@ -212,7 +227,7 @@ function calculate_objs_path(scvx::SCvx, X, U)::Number
     # path obj
     N = scvx.N
     obj = zeros(1)
-    if scvx.objs_path == nothing
+    if scvx.objs_path == []
     else
         for n in 1:N-1
             for obj_path in scvx.objs_path
@@ -227,7 +242,7 @@ end
 function calculate_objs_terminal(scvx::SCvx, X)::Number
     # terminal obj
     obj = zeros(1)
-    if scvx.objs_terminal == nothing
+    if scvx.objs_terminal == []
     else
         for obj_terminal in scvx.objs_terminal
             X_N = X[end, :]
@@ -251,13 +266,13 @@ function calculate_const_path_penalty(scvx::SCvx, X, U)
     obj = 0.0
     for n in 1:N-1
         X_n, U_n, X_n_next = X[n, :], U[n, :], X[n+1, :]
-        if scvx.consts_path_ineq == nothing
+        if scvx.consts_path_ineq == []
         else
             for const_ineq in scvx.consts_path_ineq
                 obj += calculate_ineq_penalty(scvx, const_ineq, X_n, U_n)
             end
         end
-        if scvx.consts_path_eq == nothing
+        if scvx.consts_path_eq == []
         else
             for const_eq in scvx.consts_path_eq
                 obj += calculate_eq_penalty(scvx,
@@ -271,13 +286,13 @@ end
 function calculate_const_initial_penalty(scvx::SCvx, X, U)
     X_1, U_1 = X[1, :], U[1, :]
     obj = 0.0
-    if scvx.consts_initial_ineq == nothing
+    if scvx.consts_initial_ineq == []
     else
         for const_ineq in scvx.consts_initial_ineq
             obj += calculate_ineq_penalty(scvx, const_ineq, X_1, U_1)
         end
     end
-    if scvx.consts_initial_eq == nothing
+    if scvx.consts_initial_eq == []
     else
         for const_eq in scvx.consts_initial_eq
             obj += calculate_eq_penalty(scvx, const_eq, X_1, U_1)
@@ -289,13 +304,13 @@ end
 function calculate_const_terminal_penalty(scvx::SCvx, X)
     X_N = X[end, :]
     obj = 0.0
-    if scvx.consts_terminal_ineq == nothing
+    if scvx.consts_terminal_ineq == []
     else
         for const_ineq in scvx.consts_terminal_ineq
             obj += calculate_ineq_penalty(scvx, const_ineq, X_N)
         end
     end
-    if scvx.consts_terminal_eq == nothing
+    if scvx.consts_terminal_eq == []
     else
         for const_eq in scvx.consts_terminal_eq
             obj += calculate_eq_penalty(scvx, const_eq, X_N)
@@ -340,7 +355,7 @@ function calculate_objs_path_linearised(scvx::SCvx, D, W, jacob_dict)
     X_k, U_k = scvx.X_k, scvx.U_k  # linearisation point
     obj = 0.0
     DW = [D[1:end-1, :] W]
-    if scvx.objs_path == nothing
+    if scvx.objs_path == []
     else
         for n in 1:N-1
             X_k_n, U_k_n = X_k[n, :], U_k[n, :]
@@ -367,7 +382,7 @@ function calculate_objs_terminal_linearised(scvx::SCvx, D, W, jacob_dict)
     end
     obj = 0.0
     X_k = scvx.X_k
-    if scvx.objs_terminal == nothing
+    if scvx.objs_terminal == []
     else
         for obj_terminal in scvx.objs_terminal
             X_k_N = X_k[end, :]
@@ -426,7 +441,7 @@ function calculate_const_path_penalty_linearised(scvx::SCvx,
         DW_n = DW[n, :]
         D_n, W_n, D_n_next = D[n, :], W[n, :], D[n+1, :]
         DW_n_extended = DW_extended[n, :]
-        if scvx.consts_path_ineq == nothing
+        if scvx.consts_path_ineq == []
         else
             for const_ineq in scvx.consts_path_ineq
                 (
@@ -443,7 +458,7 @@ function calculate_const_path_penalty_linearised(scvx::SCvx,
                                               X_k_n, U_k_n, DW_n, jacob)
             end
         end
-        if scvx.consts_path_eq == nothing
+        if scvx.consts_path_eq == []
         else
             for const_eq in scvx.consts_path_eq
                 (
@@ -481,7 +496,7 @@ function calculate_const_initial_penalty_linearised(scvx::SCvx,
     DW = [D[1:end-1, :] W]
     DW_1 = DW[1, :]
     D_1, W_1 = D[1, :], W[1, :]
-    if scvx.consts_initial_ineq == nothing
+    if scvx.consts_initial_ineq == []
     else
         for const_ineq in scvx.consts_initial_ineq
             (
@@ -494,7 +509,7 @@ function calculate_const_initial_penalty_linearised(scvx::SCvx,
                                           X_k_1, U_k_1, DW_1, jacob)
         end
     end
-    if scvx.consts_initial_eq == nothing
+    if scvx.consts_initial_eq == []
     else
         for const_eq in scvx.consts_initial_eq
             (
@@ -527,7 +542,7 @@ function calculate_const_terminal_penalty_linearised(scvx::SCvx,
     X_k, U_k = scvx.X_k, scvx.U_k  # linearisation point
     X_k_N = X_k[end, :]
     D_N = D[end, :]
-    if scvx.consts_terminal_ineq == nothing
+    if scvx.consts_terminal_ineq == []
     else
         for const_ineq in scvx.consts_terminal_ineq
             (
@@ -543,7 +558,7 @@ function calculate_const_terminal_penalty_linearised(scvx::SCvx,
                                           X_k_N, D_N, jacob)
         end
     end
-    if scvx.consts_terminal_eq == nothing
+    if scvx.consts_terminal_eq == []
     else
         for const_eq in scvx.consts_terminal_eq
             (
