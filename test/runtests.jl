@@ -270,8 +270,9 @@ function test_scvx_example(; verbose=false)
                                   not_too_small_input],
                 consts_path_eq=[my_const_path_eq],
                 consts_initial_eq=[my_const_initial_eq],
-                consts_terminal_eq=[my_const_terminal_eq],
+                # consts_terminal_eq=[my_const_terminal_eq],
                )
+    append!(scvx, :consts_terminal_eq, [my_const_terminal_eq])
     X_0, U_0 = ones(N, n_x), ones(N-1, n_u)
     scvx = initial_guess!(scvx, X_0, U_0)
     @time solve!(scvx, verbose=verbose)
