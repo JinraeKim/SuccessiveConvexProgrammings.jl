@@ -1,7 +1,7 @@
 name = "SuccessiveConvexProgrammings"
 uuid = "de9f8efb-491d-4667-8a63-6a751e3bd45f"
 authors = ["JinraeKim <kjl950403@gmail.com> and contributors"]
-version = "0.0.1"
+version = "0.0.2"
 
 [deps]
 Convex = "f65535da-76fb-5f13-bab9-19810c17039a"
