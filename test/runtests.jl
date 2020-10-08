@@ -299,10 +299,21 @@ function test_solve(;verbose=false)
     # plot
     data = Dict("time_state" => collect(1:N),
                 "time_input" => collect(1:N-1),
-                "state" => scvx.X_k, "input" => scvx.U_k)
+                "state" => scvx.X_k_sol, "input" => scvx.U_k_sol)
     @show data["state"]
     @show data["input"]
     _plot(data)
+    return scvx
+end
+
+function test_solve_and_flush(; verbose=false)
+    print_message("solve and flush")
+    scvx = test_solve(; verbose=verbose)
+    X_k = deepcopy(scvx.X_k)
+    U_k = deepcopy(scvx.U_k)
+    flush!(scvx)
+    @test norm(X_k[2:end, :] - scvx.X_k) == 0
+    @test norm(U_k[2:end, :] - scvx.U_k) == 0
 end
 
 function _plot(data)
@@ -310,7 +321,19 @@ function _plot(data)
     mkpath(log_dir)
     for name in ["state", "input"]
         time = data["time_" * name]
-        p = plot(time, data[name], lw=3)
+        p = plot(1)
+        for i in 1:length(data[name])
+            if i == length(data[name])
+                color = :purple
+                lw = 3.0
+            else
+                color = :blue
+                lw = 1.0
+            end
+            plot!(p, time, data[name][i],
+                  linecolor=color, lw=lw, alpha=0.5*i/length(data[name]),
+                  label="")
+        end
         if name == "state"
             plot!(seriestype=:scatter,
                   [time[1]],
@@ -406,7 +429,8 @@ function test_all()
 
     # ################## solve ##################
     # test_solve_cvx_subprob()
-    test_solve(verbose=false)
+    # test_solve(verbose=false)
+    test_solve_and_flush(verbose=false)
     # ################## solve ##################
     # test_scvx_example()
 end

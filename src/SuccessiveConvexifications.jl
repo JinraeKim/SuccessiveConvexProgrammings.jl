@@ -90,8 +90,10 @@ resp.
     # default initial guess
     X_k::Array = zeros(N, n_x)
     U_k::Array = zeros(N-1, n_u)
-    obj_k::Number = -Inf  # indicates that it does not solved yet
-    flag::String = ""
+    X_k_sol = [X_k]  # contain kth solutions including zeroth sol
+    U_k_sol = [U_k]  # contain kth solutions including zeroth sol
+    obj_k::Array{Number} = []
+    flag::Array{String} = []
 end
 
 function initial_guess!(scvx::SCvx, X_k::Array, U_k::Array)
@@ -124,17 +126,17 @@ end
 function Cvx.solve!(scvx::SCvx; verbose::Bool=false)
     is_not_skipped = true
     is_not_stopped = true
-    scvx.i = 0  # reset
+    scvx.i = 0
     while is_not_stopped
         # step 1: solve convex subproblem
         D, W, jacob_dict = solve_cvx_subprob(scvx, verbose=verbose)
         # step 2: compute the actual and predicted change
-        J_k, scvx.obj_k = get_J(scvx, scvx.X_k, scvx.U_k, with_obj=true)
+        J_k, obj_k = get_J(scvx, scvx.X_k, scvx.U_k, with_obj=true)
         diff_J = J_k - get_J(scvx, scvx.X_k+D.value, scvx.U_k+W.value)
         diff_L = J_k - get_L(scvx, D.value, W.value, jacob_dict)
         # if diff_J == 0.0  # TODO: should be diff_L == 0.0 ?
         if diff_L == 0.0
-            scvx.flag = "diff_L = 0"
+            flag = "diff_L = 0"
             break
         else
             ρ_k = diff_J / diff_L
@@ -143,7 +145,7 @@ function Cvx.solve!(scvx::SCvx; verbose::Bool=false)
         if ρ_k <= scvx.ρ0
             scvx.r_k = scvx.r_k /scvx.α  # reject and contracted
             is_not_skipped = false  # go to step 1
-            scvx.flag = "rejected"
+            flag = "rejected"
         else
             is_not_skipped = true
         end
@@ -153,30 +155,38 @@ function Cvx.solve!(scvx::SCvx; verbose::Bool=false)
                                  )  # accept
             if ρ_k < scvx.ρ1
                 r_k = scvx.r_k / scvx.α
-                scvx.flag = "accept but contracted"
+                flag = "accept but contracted"
             elseif ρ_k < scvx.ρ2
                 r_k = scvx.r_k
-                scvx.flag = "accept and maintain"
+                flag = "accept and maintain"
             else
                 r_k = scvx.r_k * scvx.β
-                scvx.flag = "accept and enlarged"
+                flag = "accept and enlarged"
             end
             scvx.r_k = max(r_k, scvx.rl)
             is_not_stopped = diff_J > scvx.ϵ && scvx.i < scvx.i_max
             if !is_not_stopped
                 if scvx.i >= scvx.i_max
-                    scvx.flag = "maximum iteration"
+                    flag = "maximum iteration"
                 elseif diff_J <= scvx.ϵ
-                    scvx.flag = "success"
+                    flag = "success"
                 end
             end
         end
-        scvx.i += 1
-        if verbose && scvx.i % 10 == 0
-            println("iter = $(scvx.i)")
-        end
+        update!(scvx, obj_k, flag)
     end
     return scvx
+end
+
+function update!(scvx, obj_k, flag; verbose=false)
+    scvx.i += 1
+    push!(scvx.obj_k, obj_k)
+    push!(scvx.flag, flag)
+    push!(scvx.X_k_sol, scvx.X_k)
+    push!(scvx.U_k_sol, scvx.U_k)
+    if verbose && scvx.i % 10 == 0
+        println("iter = $(scvx.i)")
+    end
 end
 
 function solve_cvx_subprob(scvx::SCvx; verbose::Bool=false)
