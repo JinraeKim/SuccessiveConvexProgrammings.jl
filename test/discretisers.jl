@@ -27,6 +27,7 @@ function test_zero_order_hold()
     Ad, Bd, cd = discretise(disc)
 
     eps = 1e-4
+    A = [0 1 0; 0 0 1; 0 0 0]
     for i in 1:length(ts)
         @test norm(Ad[i] - exp(A * dt)) < eps
     end
