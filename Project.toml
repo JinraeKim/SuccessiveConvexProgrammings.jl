@@ -1,7 +1,7 @@
 name = "SuccessiveConvexProgrammings"
 uuid = "de9f8efb-491d-4667-8a63-6a751e3bd45f"
 authors = ["JinraeKim <kjl950403@gmail.com> and contributors"]
-version = "0.1.1"
+version = "0.1.2"
 
 [deps]
 Convex = "f65535da-76fb-5f13-bab9-19810c17039a"
@@ -14,11 +14,10 @@ Parameters = "d96e819e-fc66-5662-9728-84c9c7592b0a"
 Reexport = "189a3867-3050-52da-a836-e630ba90ab69"
 
 [compat]
-julia = "1"
 Convex = "0.13"
 ForwardDiff = "0.10"
-FymEnvs = "0.2"
 Mosek = "1.1"
 MosekTools = "0.9"
 Parameters = "0.12"
 Reexport = "0.2"
+julia = "1"
